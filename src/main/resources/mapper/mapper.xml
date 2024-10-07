@@ -1,0 +1,21 @@
+<!-- mapper.xml -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dogmeat.petconnect.petregister.mapper.PetConnectMapper">
+    <insert id="addOrphan">
+        INSERT INTO petconnect.response (
+            IMAGE_COURS,
+            AGE_INFO,
+            SPECIES_NM,
+            COLOR_NM,
+            SHTER_TELNO,
+            SFETR_INFO
+        ) VALUES (
+            #{orphan.photo},
+            #{orphan.age},
+            #{orphan.species},
+            #{orphan.color},
+            #{orphan.contact},
+            #{orphan.etcetera}
+        )
+    </insert>
+</mapper>
