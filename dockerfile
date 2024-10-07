@@ -1,6 +1,6 @@
 # Stage 1: Build the application using Gradle
-FROM gradle:7.6.0-jdk17 AS build  
-# JDK 17을 사용하는 Gradle 이미지
+FROM gradle:8.10.2-jdk21 AS build
+# JDK 21을 사용하는 Gradle 이미지
 
 # Set the working directory inside the container
 WORKDIR /home/gradle/project
@@ -21,8 +21,8 @@ COPY . .
 RUN gradle build --no-daemon
 
 # Stage 2: Create the final lightweight image
-FROM openjdk:17-jdk-slim  
-# JDK 17을 사용하는 경량 OpenJDK 이미지
+FROM openjdk:21-jdk-slim
+# JDK 21을 사용하는 경량 OpenJDK 이미지
 
 # Set the working directory inside the container
 WORKDIR /app
