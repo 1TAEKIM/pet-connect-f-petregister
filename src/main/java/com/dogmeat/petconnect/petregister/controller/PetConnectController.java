@@ -1,15 +1,26 @@
 package com.dogmeat.petconnect.petregister.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import java.util.Map;
 
-@Controller
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.dogmeat.petconnect.petregister.service.PetConnectService;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@RestController
 public class PetConnectController {
 
-    @GetMapping("/pet_register")
-    public String showRegisterPage(Model model) {
-        // You can add attributes to the model if necessary
-        return "pet_register"; // This refers to pet_register.html in the templates folder
+    @Autowired
+    private PetConnectService petConnectService;
+
+    @PostMapping("/addOrphan")
+    public int addOrphan(@RequestBody Map<String, Object> orphan) {
+        log.info("addOrphan called {}", orphan);
+        return petConnectService.addOrphan(orphan);
     }
 }
