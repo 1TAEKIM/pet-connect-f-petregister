@@ -24,13 +24,33 @@
             <div class="mb-3" id="photo-thumbnail"></div>
             <label for="photo">사진</label> <input class="form-control" id="photo" type="file" accept="image/*"
                 onchange="onUploadPhoto(this.files)">
-            <label for="age">연령</label> <input class="form-control" id="age" placeholder="2020년식">
-            <label for="species">종</label> <input class="form-control" id="species" placeholder="개">
+            <label for="age">연령</label> <input class="form-control" id="age" placeholder="2020">
+            <div>
+                <span>종</span>
+                <br>
+                <input class="form-check-input" type="radio" name="species" id="dog" value="개" checked>
+                <label for="dog">개</label>
+                <input class="form-check-input" type="radio" name="species" id="cat" value="고양이">
+                <label for="cat">고양이</label>
+                <input class="form-check-input" type="radio" name="species" id="meat" value="기타축종">
+                <label for="meat">기타축종</label>
+            </div>
+            <div>
+                <span>성별</span>
+                <br>
+                <input class="form-check-input" type="radio" name="gender" id="male" value="M" checked>
+                <label for="male">수컷</label>
+                <input class="form-check-input" type="radio" name="gender" id="female" value="F">
+                <label for="female">암컷</label>
+                <input class="form-check-input" type="radio" name="gender" id="neutral" value="N">
+                <label for="neutral">모름</label>
+            </div>
+            <label for="place">발견장소</label><input class="form-control" id="place" placeholder="서울시 송파구">
             <label for="color">색상</label><input class="form-control" id="color" placeholder="검은색">
             <label for="contact">연락처</label> <input class="form-control" id="contact" placeholder="010-0000-0000">
             <label for="et-cetera">추가 정보</label> <input class="form-control" id="et-cetera">
             <div class="mb-3"></div>
-            <button class="btn btn-primary btn-lg" onclick="onUploadArticle()">분양 등록</button>
+            <button class="btn btn-primary btn-lg" onclick="onUploadArticle()" id="register">분양 등록</button>
         </div>
     </div>
 
@@ -50,15 +70,27 @@
         document.getElementById("photo-thumbnail").appendChild(img);
     }
 
-    let onUploadArticle = () => {
+    let onUploadArticle = async () => {
+        document.getElementById("register").setAttribute("disabled", "");
+
+        let filename = document.getElementById("photo")?.files[0].name;
+
         let data = {
-            photo: URL.createObjectURL(document.getElementById("photo").files[0]),
+            photo: await getCompressedPhoto(),
+            fileName: crypto.randomUUID(),
+            fileExt: filename.substr(filename.indexOf(".") + 1, filename.length),
             age: document.getElementById("age").value,
-            species: document.getElementById("species").value,
+            species: document.querySelector("input[name=species]:checked").value,
+            gender: document.querySelector("input[name=gender]:checked").value,
+            place: document.getElementById("place").value,
             color: document.getElementById("color").value,
             contact: document.getElementById("contact").value,
             etcetera: document.getElementById("et-cetera").value,
         };
+
+        console.debug(data);
+
+        document.getElementById("register").removeAttribute("disabled");
 
         $.ajax({
             async: true,
@@ -69,10 +101,36 @@
             timeout: 3_000,
             method: "post",
         }).done((data, xhr, status) => {
-            console.log(data, xhr, status);
+            // console.log(data, xhr, status);
+            alert("업로드 완료");
         }).fail((xhr, data, error) => {
-            console.error(xhr, data, error);
+            alert("업로드 실패");
+            // console.error(xhr, data, error);
         });
+    }
+
+    let getCompressedPhoto = async () => {
+        let output = [];
+
+        let photo = document.getElementById("photo")?.files[0];
+        let compStream = new CompressionStream("gzip");
+        compStream = photo.stream().pipeThrough(compStream);
+        compStream = compStream.getReader();
+
+        let done = false;
+
+        while (!done) {
+            let { value, done: readerDone } = await compStream.read();
+            if (value) {
+                for (data of value) {
+                    output.push(data);
+                }
+            }
+
+            done = readerDone;
+        }
+
+        return output;
     }
 </script>
 

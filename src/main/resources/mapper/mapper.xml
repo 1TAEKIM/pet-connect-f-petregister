@@ -7,15 +7,19 @@
             AGE_INFO,
             SPECIES_NM,
             COLOR_NM,
+            SEX_NM,
             SHTER_TELNO,
-            SFETR_INFO
+            SFETR_INFO,
+            DISCVRY_PLC_INFO
         ) VALUES (
             #{orphan.photo},
             #{orphan.age},
             #{orphan.species},
             #{orphan.color},
+            #{orphan.gender},
             #{orphan.contact},
-            #{orphan.etcetera}
+            #{orphan.etcetera},
+            #{orphan.place}
         )
     </insert>
 </mapper>
